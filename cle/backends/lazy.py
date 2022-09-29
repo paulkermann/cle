@@ -125,8 +125,8 @@ class LazyBackend(Backend):
     """
     This is a set of tools which should help you write a backend which accesses some memory space lazily.
     """
-    def __init__(self, binary, arch, **kwargs):
-        super().__init__(binary, None, arch=arch, **kwargs)
+    def __init__(self, binary, **kwargs):
+        super().__init__(binary, None, **kwargs)
 
         self._memory_map = None
         self._segments = None

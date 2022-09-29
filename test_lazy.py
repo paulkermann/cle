@@ -14,7 +14,7 @@ logging.getLogger().setLevel(-50)
 
 class lazy_amd64_backend(cle.backends.lazy.LazyBackend):
     def __init__(self, binary, binary_stream, **kwargs):
-        super().__init__(binary, archinfo.arch_amd64.ArchAMD64(), **kwargs)
+        super().__init__(binary, **kwargs)
 
     def _load_data(self, addr, size):
         if addr == 0x111119000:
@@ -35,7 +35,7 @@ register_backend("lazy", lazy_amd64_backend)
 
 def main():
     stream = BytesIO(b"\x00" * 0)
-    proj = angr.Project(stream, main_opts={"backend": "lazy", "entry_point": 0})
+    proj = angr.Project(stream, main_opts={"backend": "lazy", "entry_point": 0, "arch": archinfo.arch_amd64.ArchAMD64()})
     state = proj.factory.call_state(0x111119000, stack_base=0x111110000)
     sm = proj.factory.simulation_manager(state)
     sm.explore()

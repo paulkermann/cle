@@ -23,6 +23,7 @@ class LazyClemory(Clemory):
 
         self.min_addr = self.owner.min_addr
         self.max_addr = self.owner.max_addr
+        self.consecutive = False
         self.loaded_pages = []
 
     def _update_min_max(self):

@@ -95,6 +95,7 @@ class LazyClemory(Clemory):
     def backers(self, addr=0):
         if not self.owner.segments.find_region_containing(addr):
             return
+            
         while addr < self.max_addr:
             chunk_addr = addr & ~(self.chunk_size - 1)
             self.make_resident(chunk_addr, self.chunk_size)

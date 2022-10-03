@@ -17,18 +17,14 @@ class lazy_amd64_backend(cle.backends.lazy.LazyBackend):
         super().__init__(binary, **kwargs)
 
     def _load_data(self, addr, size):
-        if addr == 0x111119000:
+        if addr == 0xffffffff88880000:
             cur_data = binascii.unhexlify("48C7C037130000C3")
             return cur_data + (size - len(cur_data)) * b"\x00"
 
         return b"\x01" * size
 
     def _load_memory_map(self):
-        lower_half = (0, (1<<47) - 1)
-        upper_half_start = ((1<<47) - 1) ^ 0xffffffffffffffff
-        upper_half_size = ((1 << 64) - upper_half_start)
-        
-        got =  [lower_half, (upper_half_start, upper_half_size)]
+        got = [(0, ((1 << 64) - ((2**20) * 1)))]
         return got
 
 register_backend("lazy", lazy_amd64_backend)
@@ -36,7 +32,8 @@ register_backend("lazy", lazy_amd64_backend)
 def main():
     stream = BytesIO(b"\x00" * 0)
     proj = angr.Project(stream, main_opts={"backend": "lazy", "entry_point": 0, "arch": archinfo.arch_amd64.ArchAMD64()})
-    state = proj.factory.call_state(0x111119000, stack_base=0x111110000)
+    state = proj.factory.call_state(0xffffffff88880000, stack_base=0xffffffff88880000+0x1000)
+
     sm = proj.factory.simulation_manager(state)
     sm.explore()
 

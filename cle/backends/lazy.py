@@ -94,8 +94,8 @@ class LazyClemory(Clemory):
 
     def backers(self, addr=0):
         if not self.owner.segments.find_region_containing(addr):
-            return
-            
+            addr = self.owner.segments.find_region_next_to(addr).min_addr
+
         while addr < self.max_addr:
             chunk_addr = addr & ~(self.chunk_size - 1)
             self.make_resident(chunk_addr, self.chunk_size)
@@ -139,8 +139,8 @@ class LazyBackend(Backend):
         self._memory_map = None
         self._segments = None
         self.pic = False
-        self.linked_base = 0
         self.memory = LazyClemory(self)
+        self.linked_base = self.mapped_base = self.memory.min_addr
 
     @property
     def segments(self) -> Regions:
